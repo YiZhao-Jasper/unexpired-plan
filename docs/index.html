@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f7f9fc">
+  <meta name="description" content="The Unexpired Plan: a free monitor for accelerated diffusion policies. Reuse the unexecuted actions of a reference plan, detect drift and repetition, and remember the veto.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="The Unexpired Plan">
+  <meta property="og:description" content="A Free Monitor for Accelerated Diffusion Policies · Yi Zhao and Sebastian Scherer · AirLab, Carnegie Mellon University">
+  <meta property="og:image" content="https://yizhao-jasper.github.io/unexpired-plan/assets/social.jpg">
+  <meta property="og:url" content="https://yizhao-jasper.github.io/unexpired-plan/">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://yizhao-jasper.github.io/unexpired-plan/">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/Inter-Regular.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="style.css">
+  <script src="site.js" defer></script>
+  <title>The Unexpired Plan · AirLab</title>
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <a class="wordmark" href="#" aria-label="The Unexpired Plan, top"><svg class="mark" viewBox="0 0 34 34" aria-hidden="true"><path d="M3 8h28M3 17h20M3 26h11"/><circle cx="27" cy="26" r="4"/></svg><span>THE UNEXPIRED PLAN</span></a>
+  <nav aria-label="Main navigation"><a href="#idea">The idea</a><a href="#method">Method</a><a href="#results">Results</a><a href="#film">Film <span aria-hidden="true">↗</span></a></nav>
+</header>
+<main id="main">
+  <section class="hero" aria-labelledby="title">
+    <div class="hero-grid" aria-hidden="true"></div>
+    <div class="hero-copy wrap">
+      <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> AIRLAB · CARNEGIE MELLON UNIVERSITY</p>
+      <h1 id="title">The <em>Unexpired</em> Plan<span class="title-dot">.</span></h1>
+      <p class="subtitle">A Free Monitor for Accelerated Diffusion Policies</p>
+      <p class="authors"><a href="https://github.com/YiZhao-Jasper">Yi Zhao</a><span aria-hidden="true">·</span><a href="https://www.ri.cmu.edu/ri-faculty/sebastian-scherer/">Sebastian Scherer</a></p>
+      <p class="affiliation"><a href="https://theairlab.org/">AirLab</a> · <a href="https://www.ri.cmu.edu/">The Robotics Institute</a> · Carnegie Mellon University</p>
+      <div class="hero-actions"><a class="button primary" href="#film"><span aria-hidden="true">▶</span> Watch the film <span class="button-detail">4 min</span></a><a class="button secondary" href="https://github.com/YiZhao-Jasper/unexpired-plan">Code <span aria-hidden="true">↗</span></a><a class="button secondary" href="#method">Explore the method <span aria-hidden="true">↓</span></a></div>
+    </div>
+    <div class="comparison wrap" id="comparison">
+      <div class="comparison-top"><span class="micro">ONE SCENE. ONE DISTURBANCE.</span><span class="micro">A DIFFERENT RESPONSE.</span></div>
+      <div class="paired-views">
+        <figure class="trial off">
+          <figcaption><span class="condition"><i aria-hidden="true"></i> Monitor off</span><span class="trial-state" id="off-state">Same reference schedule</span></figcaption>
+          <video id="off-video" muted playsinline preload="metadata" poster="assets/media/failure-poster.webp" aria-label="Controlled MuJoCo illustration with monitoring disabled; the biased action stream misses the target"><source src="assets/media/failure.mp4" type="video/mp4"></video>
+          <span class="outcome" id="off-outcome">Target missed</span>
+        </figure>
+        <figure class="trial on">
+          <figcaption><span class="condition"><i aria-hidden="true"></i> Unexpired Plan</span><span class="trial-state" id="on-state">Reference plan stored</span></figcaption>
+          <video id="on-video" muted playsinline preload="metadata" poster="assets/media/guarded-poster.webp" aria-label="Matched controlled MuJoCo illustration with monitoring enabled; stored-reference fallback and persistent demotion bring the object to the target"><source src="assets/media/guarded.mp4" type="video/mp4"></video>
+          <span class="outcome" id="on-outcome">Target reached</span>
+        </figure>
+      </div>
+      <div class="comparison-controls"><button class="icon-button" id="pair-play" type="button" aria-label="Play comparison">▶</button><label class="sr-only" for="pair-seek">Comparison time</label><input id="pair-seek" type="range" min="0" max="12.96" step="0.04" value="0"><span class="timecode" id="pair-time">00:00 / 00:13</span><button class="text-button" id="pair-replay" type="button">Replay <span aria-hidden="true">↺</span></button></div>
+      <p class="comparison-caption">Controlled simulation from our film. Same initial state, disturbance, reference schedule, and playback speed. <a href="#illustration-note">How to read this demo <span aria-hidden="true">↗</span></a></p>
+    </div>
+    <div class="hero-takeaway wrap"><p>A plan can outlive the call that made it.<br><strong>Let its remaining actions check what comes next.</strong></p><a href="#idea" class="round-link" aria-label="Read the idea">↓</a></div>
+  </section>
+
+  <section class="section wrap" id="idea" aria-labelledby="idea-title">
+    <div class="section-heading"><p class="eyebrow">01 / THE PROBLEM</p><h2 id="idea-title">Agreement can<br><em>hide failure.</em></h2><p class="section-lead">An accelerator can pass its own similarity gate and still break the task. The unexpired reference plan gives us a different question: <strong>does the action still agree with the plan?</strong></p></div>
+    <div class="evidence-toolbar"><p>One task, three conditions</p><div class="segmented" role="group" aria-label="Select original paper frames"><button type="button" data-phase="inspection" aria-pressed="false">At inspection</button><button class="active" type="button" data-phase="outcome" aria-pressed="true">At outcome</button></div></div>
+    <div class="evidence-grid" data-phase="outcome">
+      <article class="evidence-case reference"><div class="case-head"><span class="micro">REFERENCE</span><h3>Unaccelerated</h3></div><div class="paper-frame"><img src="assets/figures/reference-outcome.webp" data-inspection="assets/figures/reference-inspection.webp" data-outcome="assets/figures/reference-outcome.webp" alt="Unaccelerated reference: successful final task state from Figure 1" width="256" height="256" loading="lazy"></div><div class="case-result"><strong>150<span>/150</span></strong><span>task successes</span></div><div class="case-reading"><span>The reference behavior</span><strong>97.0% across all ten tasks</strong></div></article>
+      <article class="evidence-case benign"><div class="case-head"><span class="micro">ACCELERATED</span><h3>Benign shortcut</h3></div><div class="paper-frame"><img src="assets/figures/benign-outcome.webp" data-inspection="assets/figures/benign-inspection.webp" data-outcome="assets/figures/benign-outcome.webp" alt="Benign acceleration: successful final task state from Figure 1" width="256" height="256" loading="lazy"></div><div class="case-result"><strong>150<span>/150</span></strong><span>task successes</span></div><div class="case-reading"><span>Own gate accepts <b>0.995 ≥ 0.97</b></span><strong class="blue">Plan deviation 0.014 → passes</strong></div></article>
+      <article class="evidence-case harmful"><div class="case-head"><span class="micro">ACCELERATED</span><h3>Harmful shortcut</h3></div><div class="paper-frame"><img src="assets/figures/harmful-outcome.webp" data-inspection="assets/figures/harmful-inspection.webp" data-outcome="assets/figures/harmful-outcome.webp" alt="Harmful acceleration: failed final task state from Figure 1" width="256" height="256" loading="lazy"></div><div class="case-result"><strong>0<span>/150</span></strong><span>task successes</span></div><div class="case-reading"><span>Own gate accepts <b>0.843 ≥ 0.80</b></span><strong class="orange">Plan deviation 0.502 → vetoes</strong></div></article>
+    </div>
+    <div class="figure-caption"><p>Original frames and measurements from Figure 1. Both accelerated conditions pass their own gate; one shared plan-deviation threshold, <strong>θ = 0.15</strong>, separates them.</p><button class="text-button" type="button" data-figure="evidence">View original figure <span aria-hidden="true">↗</span></button></div>
+    <details class="abstract"><summary>Read the research overview <span aria-hidden="true">+</span></summary><div><p>Action-chunking diffusion policies predict more actions than they immediately execute. After a full reference call, those unexecuted actions remain available. We use them to monitor accelerated calls at matching future action indices, with no additional reference forward pass for the check.</p><p>The monitor combines normalized action deviation with a near-repetition check. A veto executes the corresponding stored reference slice and permanently demotes the accelerator for the episode. Candidates are selected using the tail of their on-policy deviation distribution, without task-outcome labels.</p><p>The paper studies 114 accelerator configurations across four policy families, then tests a frozen design on a fifth, held-out insertion setting. The results quantify effective compute savings, paired success-rate differences, and the limits of monitoring with an aging reference.</p></div></details>
+  </section>
+
+  <section class="method-section" id="method" aria-labelledby="method-title">
+    <div class="wrap section">
+      <div class="section-heading"><p class="eyebrow">02 / THE METHOD</p><h2 id="method-title">Already computed.<br><em>Still useful.</em></h2><p class="section-lead">Read the unused part of a reference plan. Check two failure modes. Make a veto change the rest of the episode.</p></div>
+      <div class="method-lab">
+        <div class="method-intro"><span class="step-number">01</span><div><h3>Align the actions in time.</h3><p>The next executed actions must be compared with the <strong>same future indices</strong> of the saved plan.</p></div><span class="lab-label">INTERACTIVE SCHEMATIC</span></div>
+        <div class="plan-lab">
+          <div class="plan-label"><span id="reference-label">Saved reference</span><span>H = 8 · H<sub>exec</sub> = 2 · m = 4</span></div>
+          <div class="plan-row" id="reference-plan" aria-label="Reference action indices"></div>
+          <div class="plan-label"><span id="proposal-label">Accelerated call 1</span><span class="blue" id="alignment-note">Compare indices 2–3</span></div>
+          <div class="plan-row proposal-row" id="proposal-plan" aria-label="Accelerated action indices"></div>
+          <div class="plan-key"><span><i class="key-past"></i>Executed</span><span><i class="key-plan"></i>Unexpired</span><span><i class="key-active"></i>Compared now</span></div>
+          <div class="call-control"><button class="text-button" id="plan-play" type="button">Play sequence <span aria-hidden="true">▶</span></button><label for="call-step">Control call</label><input type="range" id="call-step" min="0" max="4" step="1" value="1"><output for="call-step" id="call-output">1</output></div>
+          <p id="call-explanation" class="lab-explanation" aria-live="polite">Read actions 2 and 3 from the saved reference. No new reference forward pass is needed for this check.</p>
+        </div>
+        <div class="method-bottom">
+          <article class="check-lab"><div class="method-intro"><span class="step-number">02</span><div><h3>Check drift. Check repetition.</h3></div></div><div class="segmented checks-tabs" role="group" aria-label="Choose a monitor case"><button class="active" type="button" data-check="agree" aria-pressed="true">Agrees</button><button type="button" data-check="drift" aria-pressed="false">Drifts</button><button type="button" data-check="repeat" aria-pressed="false">Repeats</button></div><svg id="check-plot" viewBox="0 0 520 150" role="img" aria-labelledby="check-svg-title"><title id="check-svg-title">Schematic action curves: reference and accelerated proposal agree</title><path class="plot-guide" d="M20 130H500 M20 20V130"/><path class="reference-curve" d="M25 117C160 42 289 13 495 75"/><path class="truth-curve" id="truth-curve" d="M25 117C160 88 289 70 495 134"/><path class="proposal-curve" id="proposal-curve" d="M25 114C160 39 289 10 495 72"/></svg><div class="curve-key"><span><i class="ref-line"></i>Stored reference</span><span><i class="accel-line"></i>Accelerator</span><span id="truth-key" hidden><i class="truth-line"></i>Fresh reference (not observed)</span></div><p id="check-explanation" aria-live="polite">Small deviation δ and no near repetition: let the accelerated action through.</p><p class="small-note">Conceptual curves, following Figure 2b. Near repetition compares full emitted chunks over the previous eight control calls; its threshold is calibrated from reference replay.</p></article>
+          <article class="response-lab"><div class="method-intro"><span class="step-number">03</span><div><h3>Remember the veto.</h3></div></div><div class="response-diagram"><div><span class="ladder-label">Fast accelerator</span><span class="ladder-bar rung-one"></span></div><div><span class="ladder-label">More conservative</span><span class="ladder-bar rung-two"></span></div><div><span class="ladder-label">Reference</span><span class="ladder-bar rung-three"></span></div><svg viewBox="0 0 440 120" aria-hidden="true"><path d="M60 12H160V59H290V107H415"/><circle cx="160" cy="12" r="5"/><circle cx="290" cy="59" r="5"/></svg></div><p>On a veto, execute the saved reference slice and step down to a more conservative candidate. <strong>The demotion is never undone within the episode.</strong></p><div class="response-callout"><span>Veto fallback</span><strong>0 extra reference calls</strong></div></article>
+        </div>
+      </div>
+      <figure class="paper-method"><button type="button" class="figure-button" data-figure="method" aria-label="Enlarge the original method figure"><img src="assets/figures/method.webp" alt="Original Figure 2: temporal alignment with the unexpired plan; agreement, drift and repetition checks; absorbing demotion after a veto" width="3200" height="862" loading="lazy"><span>Original Figure 2 <span aria-hidden="true">↗</span></span></button></figure>
+      <div class="selection-strip"><span class="micro">CHOOSING AN ACCELERATOR</span><p>Visit its own states. Measure the <strong>95th-percentile deviation</strong>. Select the cheapest passing candidate.</p><span class="selection-footnote">114 configurations studied · θ = 0.15 · no task-outcome labels used for selection</span></div>
+    </div>
+  </section>
+
+  <section class="section wrap" id="results" aria-labelledby="results-title">
+    <div class="section-heading"><p class="eyebrow">03 / THE EVIDENCE</p><h2 id="results-title">Less computation.<br><em>Measured against the task.</em></h2><p class="section-lead">We report compute savings together with success-rate changes. Uncertainty stays in the picture.</p></div>
+    <div class="heldout-heading"><div><span class="micro">THE HELD-OUT TEST · TABLE IV</span><h3>A fifth family.<br>A frozen design.</h3><p>Diffusion Policy on ManiSkill3 insertion.<br>6,000 paired episodes · 71.3% reference success.</p></div><div class="headline-stat"><strong>1.96<span>×</span></strong><span>effective compute speedup</span><p>−0.2 ± 1.2 pp success-rate change</p></div></div>
+    <div class="heldout-chart" role="img" aria-label="ManiSkill3 held-out comparison. Schedule only: minus 6.7 percentage points at 2.09 times compute speedup. Speed-matched step reduction: minus 3.9 points at 1.96 times. Unexpired Plan: minus 0.2 plus or minus 1.2 points at 1.96 times, within the plus or minus 2 point equivalence margin.">
+      <div class="chart-column-head"><span>Compared with the unaccelerated reference</span><span>Success-rate change (percentage points)</span><span>Compute speedup</span></div>
+      <div class="result-chart-row"><div class="row-name">Same schedule<span>Monitor off</span></div><div class="plot-area"><div class="margin-band"></div><div class="zero-line"></div><div class="estimate baseline" style="--point:13%"><i></i><b>−6.7</b></div></div><strong class="row-speed">2.09×</strong></div>
+      <div class="result-chart-row"><div class="row-name">Step reduction<span>Speed matched</span></div><div class="plot-area"><div class="margin-band"></div><div class="zero-line"></div><div class="estimate baseline" style="--point:41%"><i></i><b>−3.9</b></div></div><strong class="row-speed">1.96×</strong></div>
+      <div class="result-chart-row ours"><div class="row-name">Unexpired Plan<span>Monitor on</span></div><div class="plot-area"><div class="margin-band"></div><div class="zero-line"></div><div class="interval" style="--left:66%;--width:24%"></div><div class="estimate" style="--point:78%"><i></i><b>−0.2 ± 1.2</b></div></div><strong class="row-speed">1.96×</strong></div>
+      <div class="chart-axis"><span></span><div><span>−8</span><span>−6</span><span>−4</span><span>−2</span><span>0</span><span>+2</span></div><span></span></div>
+    </div>
+    <p class="chart-note"><span class="margin-swatch" aria-hidden="true"></span> Shaded band: ±2 pp equivalence margin. The monitored arm's 95% paired interval lies inside the band.</p>
+
+    <div class="family-heading"><h3>Across the original four families</h3><p>Table II · 1,500 paired episodes per family · 95% paired intervals</p></div>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="Results across four policy families"><table><thead><tr><th scope="col">Policy / benchmark</th><th scope="col">Reference success</th><th scope="col">Success-rate change</th><th scope="col">Compute speedup</th><th scope="col">Within ±2 pp?</th></tr></thead><tbody>
+      <tr><th scope="row">Cosmos <span>LIBERO</span></th><td>98.2%</td><td>+0.1 ± 1.1 pp</td><td class="table-speed">1.55×</td><td><span class="verdict">Yes</span></td></tr>
+      <tr><th scope="row">π<sub>0.5</sub> <span>LIBERO-10</span></th><td>97.0%</td><td>−0.2 ± 0.9 pp</td><td class="table-speed">1.67×</td><td><span class="verdict">Yes</span></td></tr>
+      <tr><th scope="row">Diffusion Policy <span>PushT</span></th><td>58.0%</td><td>+1.2 ± 2.6 pp</td><td class="table-speed">1.75×</td><td><span class="verdict undecided">Undecided</span></td></tr>
+      <tr><th scope="row">3D Diffusion Policy <span>MetaWorld</span></th><td>94.2%</td><td>+0.1 ± 1.4 pp</td><td class="table-speed">3.09×</td><td><span class="verdict">Yes</span></td></tr>
+    </tbody></table></div>
+    <div class="result-notes"><p><strong>What the comparison establishes.</strong> On three of these four families, the same reference schedule without monitoring is already within the margin. The held-out insertion task above provides the stronger comparison.</p><p><strong>What remains uncertain.</strong> PushT's interval is too wide to establish equivalence. Compute speedup includes reference calls; it does not measure task duration, peak latency, or energy.</p></div>
+    <details class="scope-notes"><summary>Scope and limitations <span aria-hidden="true">+</span></summary><div><p>All closed-loop evaluations reported in the paper are in simulation. A reference plan uses an older observation; a small persistent bias may remain below the per-call threshold. Guarding every call does not guarantee zero errors or distribution-free safety.</p><p>The first four policy families informed the design. Only the fifth family was held out after the design was frozen. Reference calls are refreshed at m = ⌊H / H<sub>exec</sub>⌋ to preserve coverage; delaying refresh creates uncovered calls and changes the compute tradeoff.</p></div></details>
+  </section>
+
+  <section class="film-section" id="film" aria-labelledby="film-title"><div class="wrap section">
+    <div class="film-heading"><div><p class="eyebrow">04 / THE FILM</p><h2 id="film-title">See the full story.</h2></div><p>From the physical motivation<br>to the monitor and its evidence.</p></div>
+    <video id="film-video" controls playsinline preload="none" poster="assets/media/film-poster.webp" aria-label="The Unexpired Plan, four-minute research film with English male narration"><source src="assets/media/unexpired-plan-film.mp4" type="video/mp4"><track kind="captions" src="assets/media/unexpired-plan.en.vtt" srclang="en" label="English">Your browser does not support embedded video. <a href="assets/media/unexpired-plan-film.mp4">Download the film.</a></video>
+    <div class="film-chapters" aria-label="Film chapters"><button type="button" data-time="0"><span>00:00</span> Motivation</button><button type="button" data-time="28"><span>00:28</span> Matched comparison</button><button type="button" data-time="67"><span>01:07</span> The monitor</button><button type="button" data-time="146"><span>02:26</span> Results</button><button type="button" data-time="222"><span>03:42</span> Credits</button></div>
+    <div class="film-notes"><p id="illustration-note"><strong>About the moving comparison.</strong> This controlled MuJoCo illustration uses synthetic action streams and choreographed object attachment, with object contact disabled. The repository monitor drives the monitored arm; release positions follow the simulated end effector. These two trials illustrate the mechanism and are not benchmark success-rate measurements.</p><p><strong>About the real-robot footage.</strong> Shared hardware excerpts provide context and do not show deployment of our method. Original footage, authors, licenses, and source playback speeds are documented in <a href="credits.html">sources and acknowledgments <span aria-hidden="true">↗</span></a>.</p></div>
+  </div></section>
+
+  <section class="closing wrap"><div><p class="eyebrow">THE UNEXPIRED PLAN</p><h2>Read the plan.<br><em>Remember the veto.</em></h2></div><a class="airlab-link" href="https://theairlab.org/"><img src="assets/airlab.png" alt="AirLab, Carnegie Mellon University" width="240" height="72" loading="lazy"></a></section>
+  <section class="citation wrap" aria-labelledby="citation-title"><div class="citation-heading"><h3 id="citation-title">Reference this work</h3><button class="text-button" id="copy-citation" type="button">Copy BibTeX <span aria-hidden="true">↗</span></button></div><pre id="bibtex">@misc{zhao2026unexpiredplan,
+  title  = {The Unexpired Plan: A Free Monitor for
+            Accelerated Diffusion Policies},
+  author = {Yi Zhao and Sebastian Scherer},
+  year   = {2026},
+  url    = {https://yizhao-jasper.github.io/unexpired-plan/}
+}</pre><p class="small-note">Project citation. The archival paper link will be added when available.</p><p class="sr-only" id="copy-status" role="status"></p></section>
+</main>
+<footer class="site-footer wrap"><p>Yi Zhao &amp; Sebastian Scherer <span>·</span> AirLab, Carnegie Mellon University</p><div><a href="credits.html">Credits</a><a href="https://github.com/YiZhao-Jasper/unexpired-plan">Code &amp; website <span aria-hidden="true">↗</span></a><a href="#">Back to top ↑</a></div></footer>
+<dialog id="figure-dialog" aria-labelledby="figure-title"><div class="dialog-bar"><h2 id="figure-title">Original paper figure</h2><button class="icon-button" id="close-figure" type="button" aria-label="Close enlarged figure">×</button></div><div class="dialog-image"><img id="enlarged-figure" alt=""></div><p>Original author-provided figure. Pinch or scroll to inspect details. <a id="figure-download" href="assets/figures/method.svg" target="_blank" rel="noopener">Open vector figure ↗</a></p></dialog>
+</body>
+</html>

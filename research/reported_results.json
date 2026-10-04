@@ -1,0 +1,27 @@
+{
+  "title": "The Unexpired Plan: A Free Monitor for Accelerated Diffusion Policies",
+  "provenance": "Manuscript-reported results, manually transcribed and checked against the paper; not reproduced measurements from this repository.",
+  "sweep": {"configurations": 114, "policy_families": 4},
+  "equivalence_margin_pp": 2.0,
+  "confidence_interval": "95% paired interval",
+  "families": [
+    {"name":"Cosmos","suite":"LIBERO","m":2,"base_sr_percent":98.2,"delta_sr_pp":0.1,"effective_speedup":1.55,"paired_half_width_pp":1.1,"paired_episodes":1500,"within_margin":true,"source":"Table II"},
+    {"name":"pi_0.5","suite":"LIBERO-10","m":5,"base_sr_percent":97.0,"delta_sr_pp":-0.2,"effective_speedup":1.67,"paired_half_width_pp":0.9,"paired_episodes":1500,"within_margin":true,"source":"Table II"},
+    {"name":"Diffusion Policy","suite":"PushT","m":2,"base_sr_percent":58.0,"delta_sr_pp":1.2,"effective_speedup":1.75,"paired_half_width_pp":2.6,"paired_episodes":1500,"within_margin":false,"status":"Undecided","source":"Table II"},
+    {"name":"3D Diffusion Policy","suite":"MetaWorld","m":4,"base_sr_percent":94.2,"delta_sr_pp":0.1,"effective_speedup":3.09,"paired_half_width_pp":1.4,"paired_episodes":1500,"within_margin":true,"source":"Table II"},
+    {"name":"Diffusion Policy","suite":"ManiSkill3 insertion","m":3,"base_sr_percent":71.3,"delta_sr_pp":-0.2,"effective_speedup":1.96,"paired_half_width_pp":1.2,"paired_episodes":6000,"within_margin":true,"source":"Table IV","frozen_design":true}
+  ],
+  "held_out_comparators": [
+    {"label":"Same schedule, monitor off","delta_sr_pp":-6.7,"speedup":2.09},
+    {"label":"Step reduction, speed matched","delta_sr_pp":-3.9,"speedup":1.96},
+    {"label":"Unexpired Plan","delta_sr_pp":-0.2,"paired_half_width_pp":1.2,"speedup":1.96}
+  ],
+  "gate_failure": {"task_success_unaccelerated":"150/150","task_success_benign":"150/150","task_success_harmful":"0/150","overall_unaccelerated_percent":97.0,"overall_benign_percent":97.0,"overall_harmful_percent":6.0,"benign_feature_agreement":0.995,"harmful_feature_agreement":0.843,"benign_own_threshold":0.97,"harmful_own_threshold":0.80,"benign_plan_deviation":0.014,"harmful_plan_deviation":0.502,"shared_threshold":0.15,"source":"Figure 1"},
+  "qualifications": [
+    "On three of the four original families, the same schedule without monitoring is already within the equivalence margin.",
+    "The PushT paired interval is too wide to establish equivalence.",
+    "The fifth family was evaluated after the design was frozen.",
+    "All paper-reported closed-loop evaluations are in simulation.",
+    "Effective compute speedup includes reference calls and is not task duration, peak latency, or energy."
+  ]
+}

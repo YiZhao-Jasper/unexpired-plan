@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "Please cite the research work when using this implementation."
+title: "The Unexpired Plan: A Free Monitor for Accelerated Diffusion Policies"
+type: software
+authors:
+  - family-names: Zhao
+    given-names: Yi
+repository-code: "https://github.com/YiZhao-Jasper/unexpired-plan"
+url: "https://yizhao-jasper.github.io/unexpired-plan/"
+version: 0.1.0
+license: MIT
+preferred-citation:
+  type: generic
+  title: "The Unexpired Plan: A Free Monitor for Accelerated Diffusion Policies"
+  authors:
+    - family-names: Zhao
+      given-names: Yi
+    - family-names: Scherer
+      given-names: Sebastian
+  year: 2026
+  url: "https://yizhao-jasper.github.io/unexpired-plan/"

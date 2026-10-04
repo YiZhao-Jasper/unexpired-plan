@@ -1,0 +1,29 @@
+{
+  "status": "paper-derived protocol; checkpoint and accelerator identities must be supplied before a benchmark reproduction",
+  "source": "The Unexpired Plan, Sections III–V",
+  "equivalence_margin_pp": 2.0,
+  "paired_ci": 0.95,
+  "bootstrap_cluster": "initial_state",
+  "selection_signal": "95th percentile of normalized action deviation on candidate-visited states",
+  "selection_uses_success": false,
+  "execution_horizon": 2,
+  "theta": 0.15,
+  "repetition_window": 8,
+  "theta_lambda": null,
+  "drift_by_age": null,
+  "families": [
+    {"policy":"Cosmos","environment":"LIBERO","reported_m":2,"horizon":null,"paired_episodes":1500,"seeds":3,"episodes_per_seed":500,"checkpoint":null,"accelerator_ladder":null},
+    {"policy":"pi_0.5","environment":"LIBERO-10","reported_m":5,"horizon":null,"paired_episodes":1500,"seeds":3,"episodes_per_seed":500,"checkpoint":null,"accelerator_ladder":null},
+    {"policy":"Diffusion Policy","environment":"PushT","reported_m":2,"horizon":null,"paired_episodes":1500,"seeds":3,"episodes_per_seed":500,"checkpoint":null,"accelerator_ladder":null},
+    {"policy":"3D Diffusion Policy","environment":"MetaWorld","reported_m":4,"horizon":null,"paired_episodes":1500,"seeds":3,"episodes_per_seed":500,"checkpoint":null,"accelerator_ladder":null},
+    {"policy":"Diffusion Policy","environment":"ManiSkill3 tight-tolerance peg insertion","reported_m":3,"horizon":6,"paired_episodes":6000,"seeds":null,"checkpoint":null,"accelerator_ladder":null,"design_frozen_before_evaluation":true}
+  ],
+  "not_specified_in_supplied_pdf": [
+    "Exact frozen model/checkpoint hashes and accelerator hyperparameters",
+    "The full 114-configuration sweep and every candidate ladder",
+    "Numeric theta_lambda and the exact drift calibration estimator",
+    "Original paired initial-state seed files and per-episode outcomes",
+    "Hardware/batch timing raw records and all five native task configurations",
+    "Exact treatment of full-chunk repetition history after a partial-plan fallback"
+  ]
+}
