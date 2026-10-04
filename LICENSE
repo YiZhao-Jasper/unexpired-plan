@@ -19,8 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-This license applies to the original software in src/, tests/, examples/, and
-the website implementation. Research figures and research text retain their
-authors' rights. Fonts, third-party footage, models, and other media retain
-their respective licenses; see THIRD_PARTY_NOTICES.md and docs/credits.html.
