@@ -14,7 +14,7 @@
   <link rel="canonical" href="https://yizhao-jasper.github.io/unexpired-plan/">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/fonts/Inter-Regular.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=2">
   <script src="site.js" defer></script>
   <title>The Unexpired Plan · AirLab</title>
 </head>
@@ -28,7 +28,7 @@
   <section class="hero" aria-labelledby="title">
     <div class="hero-grid" aria-hidden="true"></div>
     <div class="hero-copy wrap">
-      <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> AIRLAB · CARNEGIE MELLON UNIVERSITY</p>
+      <a class="hero-airlab" href="https://theairlab.org/" aria-label="AirLab at Carnegie Mellon University"><img src="assets/airlab.png" alt="AirLab" width="763" height="167" fetchpriority="high"></a>
       <h1 id="title">The <em>Unexpired</em> Plan<span class="title-dot">.</span></h1>
       <p class="subtitle">A Free Monitor for Accelerated Diffusion Policies</p>
       <p class="authors"><a href="https://github.com/YiZhao-Jasper">Yi Zhao</a><span aria-hidden="true">·</span><a href="https://www.ri.cmu.edu/ri-faculty/sebastian-scherer/">Sebastian Scherer</a></p>
@@ -40,12 +40,12 @@
       <div class="paired-views">
         <figure class="trial off">
           <figcaption><span class="condition"><i aria-hidden="true"></i> Monitor off</span><span class="trial-state" id="off-state">Same reference schedule</span></figcaption>
-          <video id="off-video" muted playsinline preload="metadata" poster="assets/media/failure-poster.webp" aria-label="Controlled MuJoCo illustration with monitoring disabled; the biased action stream misses the target"><source src="assets/media/failure.mp4" type="video/mp4"></video>
+          <video id="off-video" muted playsinline preload="metadata" poster="assets/media/failure-poster.webp?v=2" aria-label="Controlled MuJoCo illustration with monitoring disabled; the biased action stream misses the target"><source src="assets/media/failure.mp4?v=2" type="video/mp4"></video>
           <span class="outcome" id="off-outcome">Target missed</span>
         </figure>
         <figure class="trial on">
           <figcaption><span class="condition"><i aria-hidden="true"></i> Unexpired Plan</span><span class="trial-state" id="on-state">Reference plan stored</span></figcaption>
-          <video id="on-video" muted playsinline preload="metadata" poster="assets/media/guarded-poster.webp" aria-label="Matched controlled MuJoCo illustration with monitoring enabled; stored-reference fallback and persistent demotion bring the object to the target"><source src="assets/media/guarded.mp4" type="video/mp4"></video>
+          <video id="on-video" muted playsinline preload="metadata" poster="assets/media/guarded-poster.webp?v=2" aria-label="Matched controlled MuJoCo illustration with monitoring enabled; stored-reference fallback and persistent demotion bring the object to the target"><source src="assets/media/guarded.mp4?v=2" type="video/mp4"></video>
           <span class="outcome" id="on-outcome">Target reached</span>
         </figure>
       </div>
@@ -95,13 +95,13 @@
     <div class="section-heading"><p class="eyebrow">03 / THE EVIDENCE</p><h2 id="results-title">Less computation.<br><em>Measured against the task.</em></h2><p class="section-lead">We report compute savings together with success-rate changes. Uncertainty stays in the picture.</p></div>
     <div class="heldout-heading"><div><span class="micro">THE HELD-OUT TEST · TABLE IV</span><h3>A fifth family.<br>A frozen design.</h3><p>Diffusion Policy on ManiSkill3 insertion.<br>6,000 paired episodes · 71.3% reference success.</p></div><div class="headline-stat"><strong>1.96<span>×</span></strong><span>effective compute speedup</span><p>−0.2 ± 1.2 pp success-rate change</p></div></div>
     <div class="heldout-chart" role="img" aria-label="ManiSkill3 held-out comparison. Schedule only: minus 6.7 percentage points at 2.09 times compute speedup. Speed-matched step reduction: minus 3.9 points at 1.96 times. Unexpired Plan: minus 0.2 plus or minus 1.2 points at 1.96 times, within the plus or minus 2 point equivalence margin.">
-      <div class="chart-column-head"><span>Compared with the unaccelerated reference</span><span>Success-rate change (percentage points)</span><span>Compute speedup</span></div>
+      <div class="chart-column-head"><span>Method</span><span>Success change (pp)</span><span>Speedup</span></div>
       <div class="result-chart-row"><div class="row-name">Same schedule<span>Monitor off</span></div><div class="plot-area"><div class="margin-band"></div><div class="zero-line"></div><div class="estimate baseline" style="--point:13%"><i></i><b>−6.7</b></div></div><strong class="row-speed">2.09×</strong></div>
       <div class="result-chart-row"><div class="row-name">Step reduction<span>Speed matched</span></div><div class="plot-area"><div class="margin-band"></div><div class="zero-line"></div><div class="estimate baseline" style="--point:41%"><i></i><b>−3.9</b></div></div><strong class="row-speed">1.96×</strong></div>
       <div class="result-chart-row ours"><div class="row-name">Unexpired Plan<span>Monitor on</span></div><div class="plot-area"><div class="margin-band"></div><div class="zero-line"></div><div class="interval" style="--left:66%;--width:24%"></div><div class="estimate" style="--point:78%"><i></i><b>−0.2 ± 1.2</b></div></div><strong class="row-speed">1.96×</strong></div>
       <div class="chart-axis"><span></span><div><span>−8</span><span>−6</span><span>−4</span><span>−2</span><span>0</span><span>+2</span></div><span></span></div>
     </div>
-    <p class="chart-note"><span class="margin-swatch" aria-hidden="true"></span> Shaded band: ±2 pp equivalence margin. The monitored arm's 95% paired interval lies inside the band.</p>
+    <p class="chart-note"><span class="margin-swatch" aria-hidden="true"></span> Change relative to the unaccelerated reference, in percentage points (pp). Shaded band: ±2 pp equivalence margin. The monitored arm's 95% paired interval lies inside the band.</p>
 
     <div class="family-heading"><h3>Across the original four families</h3><p>Table II · 1,500 paired episodes per family · 95% paired intervals</p></div>
     <div class="table-scroll" tabindex="0" role="region" aria-label="Results across four policy families"><table><thead><tr><th scope="col">Policy / benchmark</th><th scope="col">Reference success</th><th scope="col">Success-rate change</th><th scope="col">Compute speedup</th><th scope="col">Within ±2 pp?</th></tr></thead><tbody>
@@ -115,8 +115,8 @@
   </section>
 
   <section class="film-section" id="film" aria-labelledby="film-title"><div class="wrap section">
-    <div class="film-heading"><div><p class="eyebrow">04 / THE FILM</p><h2 id="film-title">See the full story.</h2></div><p>From the physical motivation<br>to the monitor and its evidence.</p></div>
-    <video id="film-video" controls playsinline preload="none" poster="assets/media/film-poster.webp" aria-label="The Unexpired Plan, four-minute research film with English male narration"><source src="assets/media/unexpired-plan-film.mp4" type="video/mp4"><track kind="captions" src="assets/media/unexpired-plan.en.vtt" srclang="en" label="English">Your browser does not support embedded video. <a href="assets/media/unexpired-plan-film.mp4">Download the film.</a></video>
+    <div class="film-heading"><div><p class="eyebrow">04 / THE FILM · 1080p</p><h2 id="film-title">See the full story.</h2></div><p>From the physical motivation<br>to the monitor and its evidence.</p></div>
+    <video id="film-video" controls playsinline preload="none" poster="assets/media/film-poster.webp?v=2" aria-label="The Unexpired Plan, four-minute research film with English male narration"><source src="assets/media/unexpired-plan-film.mp4?v=2" type="video/mp4"><track kind="captions" src="assets/media/unexpired-plan.en.vtt" srclang="en" label="English">Your browser does not support embedded video. <a href="assets/media/unexpired-plan-film.mp4?v=2">Download the film.</a></video>
     <div class="film-chapters" aria-label="Film chapters"><button type="button" data-time="0"><span>00:00</span> Motivation</button><button type="button" data-time="28"><span>00:28</span> Matched comparison</button><button type="button" data-time="67"><span>01:07</span> The monitor</button><button type="button" data-time="146"><span>02:26</span> Results</button><button type="button" data-time="222"><span>03:42</span> Credits</button></div>
     <div class="film-notes"><p id="illustration-note"><strong>About the moving comparison.</strong> This controlled MuJoCo illustration uses synthetic action streams and choreographed object attachment, with object contact disabled. The repository monitor drives the monitored arm; release positions follow the simulated end effector. These two trials illustrate the mechanism and are not benchmark success-rate measurements.</p><p><strong>About the real-robot footage.</strong> Shared hardware excerpts provide context and do not show deployment of our method. Original footage, authors, licenses, and source playback speeds are documented in <a href="credits.html">sources and acknowledgments <span aria-hidden="true">↗</span></a>.</p></div>
   </div></section>

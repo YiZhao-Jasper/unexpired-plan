@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/assets/readme-banner.svg" alt="The Unexpired Plan — A Free Monitor for Accelerated Diffusion Policies" width="100%">
+<h1>The Unexpired Plan:<br>A Free Monitor for Accelerated Diffusion Policies</h1>
 
 **[Yi Zhao](https://github.com/YiZhao-Jasper) · [Sebastian Scherer](https://www.ri.cmu.edu/ri-faculty/sebastian-scherer/)**
 
@@ -12,6 +12,10 @@
 
 </div>
 
+<p align="center"><a href="https://yizhao-jasper.github.io/unexpired-plan/#comparison"><img src="docs/assets/comparison.gif" alt="Matched simulation: keep a reference plan, check accelerated actions, then reuse the saved slice and retain a more conservative accelerator after a veto. Monitoring off misses the target; Unexpired Plan reaches it." width="100%"></a></p>
+
+<p align="center"><sub>Controlled, synthetic MuJoCo illustration · same disturbance, reference schedule, and playback speed.<br>Illustrates the mechanism; these trials are not benchmark measurements. <a href="https://yizhao-jasper.github.io/unexpired-plan/#comparison">Watch the synchronized 1080p comparison</a> · <a href="https://yizhao-jasper.github.io/unexpired-plan/#illustration-note">Details and credits</a>.</sub></p>
+
 ## A plan can outlive the call that made it
 
 Action-chunking policies predict more actions than they execute immediately. **The Unexpired Plan** uses the remaining actions of a previously computed reference plan to monitor accelerated predictions—without an additional reference forward pass for the check.
@@ -19,10 +23,6 @@ Action-chunking policies predict more actions than they execute immediately. **T
 1. **Align.** Compare the next executed actions with the same future indices of the saved plan.
 2. **Check.** Detect excessive action deviation and near repetition of recent emitted chunks.
 3. **Remember.** On a veto, execute the saved reference slice and permanently demote the accelerator for the episode.
-
-<p align="center"><a href="https://yizhao-jasper.github.io/unexpired-plan/#comparison"><img src="docs/assets/comparison.gif" alt="Synchronized controlled simulation: monitor off misses the target; Unexpired Plan reaches it" width="920"></a></p>
-
-<p align="center"><sub>Controlled, synthetic MuJoCo illustration from the research film. Same scene, disturbance, reference schedule, and playback speed. These two trials are not benchmark measurements. <a href="https://yizhao-jasper.github.io/unexpired-plan/#illustration-note">Details and media credits</a>.</sub></p>
 
 ## What is in this release?
 

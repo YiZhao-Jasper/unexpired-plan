@@ -13,7 +13,7 @@ The tests cover reference accounting, time alignment, nondivisible horizons, one
 
 ## Website
 
-**35 browser checks passed**, including:
+**38 browser checks passed** for the presentation update, including:
 
 - Layout at widths 360, 390, 820, 1440, and 1920 pixels, with no page-wide horizontal overflow.
 - Synchronized playback and seeking of both 13-second comparison clips.
@@ -21,7 +21,11 @@ The tests cover reference accounting, time alignment, nondivisible horizons, one
 - Agreement, drift, and repetition interaction states.
 - Original-paper image switching and vector-figure dialogs.
 - The 240-second V3 film and chapter navigation.
+- Native 1920 × 1080 video dimensions for both comparison clips and the full film; the V3 source streams are retained without another lossy video encode.
+- AirLab's logo appears before the paper title in the hero.
 - Reduced-motion behavior, English content, the two research authors, font/image loading, and preservation of reported uncertainty.
 - No JavaScript exceptions, failed asset requests, or external runtime assets.
+
+The README animation is rendered at 1920 × 1008 from the same matched V3 simulation clips, with brief overlays explaining saved actions, aligned checks, and persistent demotion. It remains a synthetic illustration, not a benchmark measurement. Its source clips play at the same speed; the final state is held before the animation repeats.
 
 The public file set is checked separately for private production paths and submission metadata. Media attribution is preserved. These checks validate this implementation and presentation; they do not reproduce the paper's benchmark results or establish hardware safety.
