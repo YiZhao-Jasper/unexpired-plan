@@ -1,16 +1,18 @@
 """Equations (1), (3), (4), (5), (6); no benchmark numbers are computed here."""
 
 from __future__ import annotations
+
 import math
+
 import numpy as np
 
 
 def action_array(value):
+    if np.iscomplexobj(value):
+        raise ValueError("Actions must be real-valued")
     a = np.asarray(value, dtype=np.float64)
     if a.ndim != 2 or not a.size or not np.isfinite(a).all():
-        raise ValueError(
-            "Actions must be a finite, nonempty [horizon, dimension] array"
-        )
+        raise ValueError("Actions must be a finite, nonempty [horizon, dimension] array")
     return a
 
 
@@ -26,8 +28,7 @@ def deviation(action, reference, epsilon=1e-8):
     scale = max(float(np.max(np.abs(a))), float(np.max(np.abs(r))), epsilon)
     with np.errstate(over="ignore", divide="ignore", invalid="ignore"):
         value = float(
-            np.abs(a / scale - r / scale).sum()
-            / (np.abs(r / scale).sum() + epsilon / scale)
+            np.abs(a / scale - r / scale).sum() / (np.abs(r / scale).sum() + epsilon / scale)
         )
     if not math.isfinite(value):
         raise ValueError("Normalized deviation is not finite")
@@ -35,10 +36,7 @@ def deviation(action, reference, epsilon=1e-8):
 
 
 def _horizons(horizon, execution_horizon):
-    if any(
-        isinstance(x, bool) or not isinstance(x, int)
-        for x in (horizon, execution_horizon)
-    ):
+    if any(isinstance(x, bool) or not isinstance(x, int) for x in (horizon, execution_horizon)):
         raise ValueError("Horizons must be integers")
     if execution_horizon < 1 or horizon < execution_horizon:
         raise ValueError("Require horizon >= execution_horizon >= 1")
@@ -83,13 +81,11 @@ def expected_damage(m, k, calls, damage_probability, false_negative_rate):
         or not 0 <= false_negative_rate <= 1
     ):
         raise ValueError("Invalid exposure inputs")
-    return (
-        damage_probability * calls * ((k - m) / k + (m - 1) / k * false_negative_rate)
-    )
+    return damage_probability * calls * ((k - m) / k + (m - 1) / k * false_negative_rate)
 
 
 def exposure_step_ratio(m, false_negative_rate):
-    if m <= 1 or not 0 < false_negative_rate <= 1:
+    if isinstance(m, bool) or not isinstance(m, int) or m <= 1 or not 0 < false_negative_rate <= 1:
         raise ValueError("Ratio requires m > 1 and a nonzero miss rate")
     f = false_negative_rate
     return m * (1 + (m - 1) * f) / ((m + 1) * (m - 1) * f)
@@ -97,9 +93,7 @@ def exposure_step_ratio(m, false_negative_rate):
 
 def composite_miss_rate(weights, delta_misses, repetition_misses):
     """Eq. (6) plus Fréchet bounds; independence is an explicit assumption."""
-    w, a, b = [
-        np.asarray(x, dtype=float) for x in (weights, delta_misses, repetition_misses)
-    ]
+    w, a, b = [np.asarray(x, dtype=float) for x in (weights, delta_misses, repetition_misses)]
     if w.ndim != 1 or not w.size or a.shape != w.shape or b.shape != w.shape:
         raise ValueError("Mechanism vectors must have equal nonzero length")
     if not all(np.isfinite(x).all() for x in (w, a, b)) or not np.isclose(w.sum(), 1):

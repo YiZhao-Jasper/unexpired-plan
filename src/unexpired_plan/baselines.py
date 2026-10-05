@@ -1,9 +1,10 @@
 """Explicit compute baselines; for future experiments, not new results."""
 
 from __future__ import annotations
-from collections import deque
+
 import numpy as np
-from .metrics import action_array, deviation, _horizons
+
+from .metrics import _horizons, action_array, deviation
 
 
 class ScheduledReplay:
@@ -68,16 +69,25 @@ class PaidDeviation:
     """
 
     def __init__(
-        self, reference, candidate, theta=0.15, execution_horizon=2, absorbing=True
+        self,
+        reference,
+        candidate,
+        theta=0.15,
+        execution_horizon=2,
+        absorbing=True,
+        epsilon=1e-8,
     ):
         _horizons(execution_horizon, execution_horizon)
         if theta <= 0 or not np.isfinite(theta):
             raise ValueError("Positive theta required")
+        if not np.isfinite(epsilon) or epsilon <= 0:
+            raise ValueError("epsilon must be finite and positive")
         self.reference = reference
         self.candidate = candidate
         self.theta = theta
         self.h_exec = execution_horizon
         self.absorbing = absorbing
+        self.epsilon = epsilon
         self.reset()
 
     def reset(self):
@@ -86,7 +96,9 @@ class PaidDeviation:
         self.candidate_forwards = 0
 
     def step(self, observation):
-        r = action_array(self.reference(observation))
+        # Predictors may reuse a device-transfer/output buffer. Snapshot before
+        # invoking the candidate so it cannot overwrite the comparison target.
+        r = action_array(self.reference(observation)).copy()
         self.reference_forwards += 1
         if len(r) < self.h_exec:
             raise ValueError("Reference does not cover execution")
@@ -94,7 +106,9 @@ class PaidDeviation:
             return r[: self.h_exec].copy()
         a = action_array(self.candidate(observation))
         self.candidate_forwards += 1
-        veto = deviation(a[: self.h_exec], r[: self.h_exec]) > self.theta
+        if a.shape != r.shape:
+            raise ValueError("Predictors must return identical full-chunk shapes")
+        veto = deviation(a[: self.h_exec], r[: self.h_exec], self.epsilon) > self.theta
         self.retired = bool(veto and self.absorbing)
         return (r if veto else a)[: self.h_exec].copy()
 

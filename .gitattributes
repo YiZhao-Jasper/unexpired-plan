@@ -1,0 +1,3 @@
+# The website and media document the Python research library.
+docs/** linguist-documentation
+docs/assets/** linguist-vendored

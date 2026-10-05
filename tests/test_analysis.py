@@ -1,18 +1,20 @@
 import json
 from pathlib import Path
+
 import numpy as np
 import pytest
-from unexpired_plan.metrics import (
-    deviation,
-    effective_speedup,
-    coverage,
-    expected_damage,
-    exposure_step_ratio,
-    composite_miss_rate,
-)
-from unexpired_plan.selection import tail_score, select_candidate, score_closed_loop
+
 from unexpired_plan.calibration import calibrate_repetition
 from unexpired_plan.evaluation import paired_bootstrap
+from unexpired_plan.metrics import (
+    composite_miss_rate,
+    coverage,
+    deviation,
+    effective_speedup,
+    expected_damage,
+    exposure_step_ratio,
+)
+from unexpired_plan.selection import score_closed_loop, select_candidate, tail_score
 
 
 def test_deviation_uses_reference_denominator():
@@ -112,7 +114,7 @@ def test_paired_cluster_bootstrap_identity():
 
 def test_paper_results_remain_labeled_as_reported():
     root = Path(__file__).resolve().parents[1]
-    claims = json.loads((root / "research/reported_results.json").read_text())
+    claims = json.loads((root / "configs/reported_results.json").read_text())
     assert "not reproduced" in claims["provenance"]
     assert len(claims["families"]) == 5
     assert claims["families"][2]["within_margin"] is False
@@ -123,3 +125,37 @@ def test_paper_results_remain_labeled_as_reported():
 def test_bootstrap_rejects_invalid_equivalence_margin(margin):
     with pytest.raises(ValueError):
         paired_bootstrap([1, 0], [1, 0], ["a", "b"], resamples=10, margin_pp=margin)
+
+
+def test_bootstrap_preserves_clusters_with_unequal_sizes():
+    result = paired_bootstrap(
+        [0, 0, 0, 0], [1, 0, 0, 0], ["a", "b", "b", "b"], resamples=1000, seed=13
+    )
+    assert result["delta_sr_pp"] == 25
+    assert result["ci95_pp"] == [0, 100]
+    assert result["pairs"] == 4 and result["initial_state_clusters"] == 2
+
+
+def test_equivalence_is_strict_at_the_margin():
+    result = paired_bootstrap(
+        np.zeros(100), [1] + [0] * 49 + [1] + [0] * 49, ["a"] * 50 + ["b"] * 50, resamples=100
+    )
+    assert result["ci95_pp"] == [2, 2]
+    assert not result["equivalent"]
+
+
+@pytest.mark.parametrize("ids", [[0, np.nan], [None, 1], ["same", "same"]])
+def test_missing_or_single_cluster_cannot_produce_a_confidence_interval(ids):
+    with pytest.raises(ValueError):
+        paired_bootstrap([0, 0], [0, 0], ids, resamples=20)
+
+
+def test_complex_actions_cannot_be_silently_cast_to_real():
+    with pytest.raises(ValueError, match="real-valued"):
+        deviation(np.array([[1 + 2j]]), [[1]])
+
+
+@pytest.mark.parametrize("m", [True, 2.5, float("nan"), float("inf")])
+def test_exposure_ratio_requires_an_integer_schedule(m):
+    with pytest.raises(ValueError):
+        exposure_step_ratio(m, 0.1)

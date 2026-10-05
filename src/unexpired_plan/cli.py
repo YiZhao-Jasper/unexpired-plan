@@ -1,41 +1,51 @@
-"""Run a deterministic integration example, never a benchmark claim."""
+"""Installed command and python -m entry point for the synthetic trace."""
 
 import argparse
 import json
-import numpy as np
-from .core import Candidate, MonitorConfig, UnexpiredPlanMonitor
-from .metrics import effective_speedup
+from importlib.metadata import version
+
+from .demo import run_demo
 
 
-def main():
-    p = argparse.ArgumentParser()
-    p.add_argument("--calls", type=int, default=12)
-    args = p.parse_args()
+def main(argv=None):
+    parser = argparse.ArgumentParser(
+        description="Run the Unexpired Plan synthetic trace (not a benchmark)."
+    )
+    parser.add_argument("--calls", type=int, default=12, help="control calls (default: 12)")
+    parser.add_argument(
+        "--format",
+        choices=("table", "jsonl"),
+        default="table",
+        help="human-readable table or one JSON object per line",
+    )
+    parser.add_argument("--version", action="version", version=version("unexpired-plan"))
+    args = parser.parse_args(argv)
     if args.calls < 1:
-        p.error("--calls must be positive")
+        parser.error("--calls must be positive")
 
-    def reference(t):
-        return (1 + 0.01 * np.arange(2 * t, 2 * t + 10)).reshape(10, 1)
+    decisions, reference_calls = run_demo(args.calls)
+    if args.format == "jsonl":
+        print(json.dumps({"kind": "synthetic_trace", "horizon": 10, "m": 5}))
+        for decision in decisions:
+            row = decision.as_dict()
+            # Elapsed CPU time is neither deterministic nor a GPU cost estimate.
+            row.pop("elapsed_seconds")
+            print(json.dumps(row, allow_nan=False))
+        print(json.dumps({"reference_calls": reference_calls}))
+        return
 
-    def fast(t):
-        return reference(t) + (0.3 if t == 3 else 0.005)
-
-    monitor = UnexpiredPlanMonitor(
-        reference,
-        [Candidate("fast", fast, 0.2), Candidate("conservative", reference, 0.6)],
-        MonitorConfig(10),
-    )
-    print(
-        json.dumps(
-            {
-                "kind": "synthetic_integration_example",
-                "m": 5,
-                "ideal_fixed_rung_speedup": effective_speedup(5, 5),
-            }
+    print("The Unexpired Plan | synthetic trace | H=10, H_exec=2, m=5")
+    print("CALL  ACTION SOURCE         CANDIDATE       RUNG   REFERENCE  VETO")
+    for d in decisions:
+        rung = f"{d.rung_before}->{d.rung_after}"
+        print(
+            f"{d.call:>4}  {d.source:<20}  {d.candidate or '-':<14}  "
+            f"{rung:<5}  {'yes' if d.reference_forward else 'no':<9}  "
+            f"{', '.join(d.veto_reasons) or '-'}"
         )
-    )
-    for t in range(args.calls):
-        print(json.dumps(monitor.step(t).as_dict()))
+    print("Reference calls: " + ", ".join(map(str, reference_calls)))
+    print("A veto uses the saved slice; demotion persists until the episode resets.")
+    print("Synthetic inputs and costs; this trace does not measure benchmark performance.")
 
 
 if __name__ == "__main__":

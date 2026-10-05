@@ -53,12 +53,8 @@ def test_large_finite_inputs_do_not_silently_produce_nan():
 
 
 def test_full_chunks_expire_by_control_call_even_after_fallbacks():
-    candidates = [
-        Candidate(str(i), lambda _: np.ones((20, 1)) * 2, i + 1) for i in range(10)
-    ]
-    monitor = UnexpiredPlanMonitor(
-        lambda _: np.ones((20, 1)), candidates, MonitorConfig(20)
-    )
+    candidates = [Candidate(str(i), lambda _: np.ones((20, 1)) * 2, i + 1) for i in range(10)]
+    monitor = UnexpiredPlanMonitor(lambda _: np.ones((20, 1)), candidates, MonitorConfig(20))
     for t in range(9):
         monitor.step(t)
     assert [t for t, _ in monitor.history] == [0]
@@ -94,9 +90,7 @@ def test_tail_scoring_rejects_truncated_action_prefix():
             raise AssertionError("Invalid actions must not execute")
 
     with pytest.raises(ValueError, match="execution horizon"):
-        score_closed_loop(
-            Environment, lambda _: np.ones((1, 1)), lambda _: np.ones((2, 1)), [0]
-        )
+        score_closed_loop(Environment, lambda _: np.ones((1, 1)), lambda _: np.ones((2, 1)), [0])
 
 
 @pytest.mark.parametrize("window", [0, 1.5, True])

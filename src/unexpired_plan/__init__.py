@@ -4,7 +4,7 @@ This package does not contain the manuscript's original checkpoints or data.
 """
 
 from .core import Candidate, Decision, MonitorConfig, UnexpiredPlanMonitor
-from .metrics import deviation, effective_speedup, expected_damage, coverage
+from .metrics import coverage, deviation, effective_speedup, expected_damage
 
 __all__ = [
     "Candidate",

@@ -6,6 +6,8 @@
   "bootstrap_cluster": "initial_state",
   "selection_signal": "95th percentile of normalized action deviation on candidate-visited states",
   "selection_uses_success": false,
+  "selection_comparison": "full normalized action chunks (Eq. 1); execute only their first H_exec rows",
+  "online_comparison": "candidate execution prefix versus the time-aligned saved reference slice (Eq. 2)",
   "execution_horizon": 2,
   "theta": 0.15,
   "repetition_window": 8,
@@ -22,6 +24,7 @@
     "Exact frozen model/checkpoint hashes and accelerator hyperparameters",
     "The full 114-configuration sweep and every candidate ladder",
     "Numeric theta_lambda and the exact drift calibration estimator",
+    "Numeric epsilon and exact stopping rule for iterative candidate scoring",
     "Original paired initial-state seed files and per-episode outcomes",
     "Hardware/batch timing raw records and all five native task configurations",
     "Exact treatment of full-chunk repetition history after a partial-plan fallback"

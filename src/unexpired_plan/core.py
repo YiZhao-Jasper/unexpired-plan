@@ -6,13 +6,16 @@ The ladder can only move toward slower candidates within an episode.
 """
 
 from __future__ import annotations
-from dataclasses import dataclass, field
-from collections import deque
-from typing import Callable, Mapping, Optional, Sequence
-from types import MappingProxyType
+
 import time
+from collections import deque
+from dataclasses import dataclass, field
+from types import MappingProxyType
+from typing import Callable, Mapping, Optional, Sequence
+
 import numpy as np
-from .metrics import action_array, deviation, _horizons
+
+from .metrics import _horizons, action_array, deviation
 
 
 @dataclass(frozen=True)
@@ -45,7 +48,7 @@ class MonitorConfig:
     drift_by_age: Mapping[int, float] = field(default_factory=dict)
 
     def __post_init__(self):
-        _horizons(self.horizon, self.execution_horizon)
+        m = _horizons(self.horizon, self.execution_horizon)
         if not np.isfinite(self.theta) or self.theta <= 0:
             raise ValueError("theta must be finite and positive")
         if not np.isfinite(self.repetition_threshold) or self.repetition_threshold < 0:
@@ -62,16 +65,13 @@ class MonitorConfig:
             isinstance(k, bool)
             or not isinstance(k, int)
             or k < 1
+            or k >= m
             or not np.isfinite(v)
             or v < 0
             for k, v in self.drift_by_age.items()
         ):
-            raise ValueError(
-                "Drift corrections must be nonnegative, keyed by positive age"
-            )
-        object.__setattr__(
-            self, "drift_by_age", MappingProxyType(dict(self.drift_by_age))
-        )
+            raise ValueError("Drift corrections must be nonnegative, keyed by ages 1 to m-1")
+        object.__setattr__(self, "drift_by_age", MappingProxyType(dict(self.drift_by_age)))
 
 
 @dataclass
@@ -97,9 +97,7 @@ class Decision:
 
 
 class UnexpiredPlanMonitor:
-    def __init__(
-        self, reference, candidates: Sequence[Candidate], config: MonitorConfig
-    ):
+    def __init__(self, reference, candidates: Sequence[Candidate], config: MonitorConfig):
         self.reference, self.candidates, self.config = (
             reference,
             tuple(candidates),
@@ -110,9 +108,7 @@ class UnexpiredPlanMonitor:
         if len({c.name for c in self.candidates}) != len(self.candidates):
             raise ValueError("Candidate names must be unique")
         if any(a.cost > b.cost for a, b in zip(self.candidates, self.candidates[1:])):
-            raise ValueError(
-                "Ladder must be ordered from cheap to conservative by measured cost"
-            )
+            raise ValueError("Ladder must be ordered from cheap to conservative by measured cost")
         self.m = _horizons(config.horizon, config.execution_horizon)
         self.reset()
 
@@ -166,11 +162,7 @@ class UnexpiredPlanMonitor:
             # Invalid proposals fail loudly. They must not silently execute.
             a = self._plan(candidate.predict(observation))
             raw = deviation(a[: c.execution_horizon], r, c.epsilon)
-            correction = (
-                c.drift_by_age.get(age, 0.0)
-                if candidate.mechanism == "recompute"
-                else 0.0
-            )
+            correction = c.drift_by_age.get(age, 0.0) if candidate.mechanism == "recompute" else 0.0
             corrected = max(0.0, raw - correction)
             rep = min((deviation(a, h, c.epsilon) for _, h in recent), default=None)
             reasons = []

@@ -3,7 +3,7 @@
   "provenance": "Manuscript-reported results, manually transcribed and checked against the paper; not reproduced measurements from this repository.",
   "sweep": {"configurations": 114, "policy_families": 4},
   "equivalence_margin_pp": 2.0,
-  "confidence_interval": "95% paired interval",
+  "confidence_interval": "95% paired interval clustered on initial state",
   "families": [
     {"name":"Cosmos","suite":"LIBERO","m":2,"base_sr_percent":98.2,"delta_sr_pp":0.1,"effective_speedup":1.55,"paired_half_width_pp":1.1,"paired_episodes":1500,"within_margin":true,"source":"Table II"},
     {"name":"pi_0.5","suite":"LIBERO-10","m":5,"base_sr_percent":97.0,"delta_sr_pp":-0.2,"effective_speedup":1.67,"paired_half_width_pp":0.9,"paired_episodes":1500,"within_margin":true,"source":"Table II"},

@@ -1,6 +1,7 @@
 """Clustered paired bootstrap for later benchmark integration (§V)."""
 
 from __future__ import annotations
+
 import numpy as np
 
 
@@ -18,6 +19,8 @@ def paired_bootstrap(
         raise ValueError("Require equally sized paired one-dimensional observations")
     if not np.isin(r, [0, 1]).all() or not np.isin(c, [0, 1]).all():
         raise ValueError("Success outcomes must be binary")
+    if ids.dtype.kind not in "iuUS" and not (ids.dtype.kind == "f" and np.isfinite(ids).all()):
+        raise ValueError("Cluster IDs must be finite numbers or strings, without missing IDs")
     if not isinstance(resamples, int) or isinstance(resamples, bool) or resamples < 1:
         raise ValueError("resamples must be a positive integer")
     if not np.isfinite(margin_pp) or margin_pp <= 0:
@@ -25,6 +28,8 @@ def paired_bootstrap(
     _, inverse = np.unique(ids, return_inverse=True)
     sums = np.bincount(inverse, weights=(c - r) * 100)
     sizes = np.bincount(inverse)
+    if len(sizes) < 2:
+        raise ValueError("A clustered confidence interval requires at least two initial states")
     rng = np.random.default_rng(seed)
     draws = np.empty(resamples)
     for b in range(resamples):

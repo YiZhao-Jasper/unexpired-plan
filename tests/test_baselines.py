@@ -1,11 +1,13 @@
 import numpy as np
+import pytest
+
+from unexpired_plan.adapters import ActionNormalizer
 from unexpired_plan.baselines import (
-    ScheduledReplay,
-    ScheduleOnly,
     PaidDeviation,
     RateMatchedCoin,
+    ScheduledReplay,
+    ScheduleOnly,
 )
-from unexpired_plan.adapters import ActionNormalizer
 
 
 def test_scheduled_replay_executes_same_time_indices():
@@ -50,3 +52,36 @@ def test_action_normalization_roundtrip():
     n = ActionNormalizer([1, 2], [2, 0.5])
     a = np.array([[5, 3], [2, 1]])
     np.testing.assert_allclose(n.denormalize(n.normalize(a)), a)
+
+
+def test_paid_comparison_cannot_be_overwritten_by_a_shared_output_buffer():
+    buffer = np.zeros((4, 1))
+
+    def reference(_):
+        buffer[:] = 1
+        return buffer
+
+    def candidate(_):
+        buffer[:] = 2
+        return buffer
+
+    baseline = PaidDeviation(reference, candidate)
+    np.testing.assert_array_equal(baseline.step(None), np.ones((2, 1)))
+    assert baseline.retired
+    assert baseline.reference_forwards == baseline.candidate_forwards == 1
+
+
+def test_normalization_copies_parameters_and_rejects_nonfinite_outputs():
+    center, scale = np.zeros(1), np.ones(1)
+    normalizer = ActionNormalizer(center, scale)
+    center[:] = 20
+    scale[:] = 2
+    np.testing.assert_array_equal(normalizer.normalize([[1]]), [[1]])
+    with pytest.raises(ValueError):
+        normalizer.scale[0] = 0
+    with pytest.raises(ValueError):
+        ActionNormalizer([0], [1e-308]).normalize([[1e308]])
+    with pytest.raises(ValueError):
+        ActionNormalizer([0], [1e308]).denormalize([[1e308]])
+    with pytest.raises(ValueError):
+        ActionNormalizer([], [])
