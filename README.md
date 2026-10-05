@@ -14,7 +14,7 @@
 
 <p align="center"><a href="https://yizhaojasper.com/unexpired-plan/#comparison"><img src="https://raw.githubusercontent.com/YiZhao-Jasper/unexpired-plan/main/docs/assets/comparison.gif" alt="Matched simulation: keep a reference plan, check accelerated actions, then reuse the saved slice and retain a more conservative accelerator after a veto. Monitoring off misses the target; Unexpired Plan reaches it." width="100%"></a></p>
 
-<p align="center"><sub>Controlled MuJoCo illustration of deviation-triggered fallback and persistent demotion, using synthetic inputs.<br>Same disturbance, reference schedule, and playback speed. <a href="https://yizhaojasper.com/unexpired-plan/#comparison">Synchronized 1080p comparison</a> · <a href="https://yizhaojasper.com/unexpired-plan/#illustration-note">Setup and credits</a>.</sub></p>
+<p align="center"><sub>Illustrative MuJoCo comparison with synthetic inputs, matched disturbance, reference schedule, and playback speed. <a href="https://yizhaojasper.com/unexpired-plan/#illustration-note">Setup and credits</a>.</sub></p>
 
 ## A plan can outlive the call that made it
 
@@ -26,7 +26,7 @@ Action-chunking policies predict more actions than they execute immediately. **T
 
 ## Quick start
 
-Python 3.10 or newer is required. The core has one runtime dependency: NumPy. No GPU, model download, or simulator is needed for the examples.
+Requires Python 3.10+ and NumPy. Install the package and run the synthetic integration example:
 
 ```bash
 git clone --depth 1 https://github.com/YiZhao-Jasper/unexpired-plan.git
@@ -34,61 +34,24 @@ cd unexpired-plan
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install .
-python -m unexpired_plan
-```
-
-The command prints an inspectable decision table. At call **3**, a biased proposal triggers fallback and moves the ladder from `fast` to `conservative`. Reference calls remain **0, 5, 10**. No new reference call is made on the vetoing call, and demotion persists across refreshes.
-
-Run the complete calibration → selection → deployment example:
-
-```bash
 python examples/closed_loop.py
 ```
 
-This lightweight tutorial uses synthetic policies and costs to demonstrate the complete integration workflow: a feedback environment, physical-to-normalized action conversion, reference replay, both calibrated checks, candidate rollouts on their own states, and persistent fallback. It prints the selected candidate, calibration values, reference/fallback calls, and final target distance.
-
-For a reproducible JSON trace or the installed console command:
-
-```bash
-python -m unexpired_plan --format jsonl > trace.jsonl
-unexpired-plan --calls 12
-```
-
-On Windows, activate the environment with `.venv\Scripts\Activate.ps1` instead of `source`. Run `python -m unexpired_plan --help` for CLI options.
+The example covers reference replay, calibration, candidate selection, and monitored deployment. Run `python -m unexpired_plan` for a compact decision trace. See the [integration guide](examples/README.md) to connect a policy and configure its benchmark assets.
 
 ## Start with the code
 
 | Task | Entry point |
 | :--- | :--- |
-| Read the online algorithm | **[`src/unexpired_plan/core.py`](src/unexpired_plan/core.py)** — `Candidate`, `MonitorConfig`, `UnexpiredPlanMonitor` |
-| Run an end-to-end integration | **[`examples/closed_loop.py`](examples/closed_loop.py)** |
-| Connect your own policy | [`examples/README.md`](examples/README.md#connect-your-policy) — action units, calibration, episode lifecycle |
-| Calibrate from reference replay | [`calibration.py`](src/unexpired_plan/calibration.py) |
-| Score and select candidates | [`selection.py`](src/unexpired_plan/selection.py) |
-| Compare baselines and paired outcomes | [`baselines.py`](src/unexpired_plan/baselines.py), [`evaluation.py`](src/unexpired_plan/evaluation.py) |
-| Follow the paper's equations and protocol | [Paper-to-code mapping](examples/README.md#paper-to-code-mapping), [`configs/paper_protocol.json`](configs/paper_protocol.json) |
-
-Each predictor returns a finite `[H, action_dimension]` array in the same **normalized action space**. The monitor returns `decision.executed`, an `[H_exec, action_dimension]` prefix. The integration guide covers conversion back to the environment's action units and stateful predictor reset.
-
-**Release contents.** The package provides the monitor, calibration, candidate selection, baselines, and paired evaluation, together with runnable integration examples. Benchmark checkpoints and original experiment artifacts are not bundled; the [integration guide](examples/README.md#evaluation-and-release-scope) describes the required assets and configuration.
-
-## Software testing
-
-```bash
-python -m pip install -e '.[dev]'
-python -m pytest -q
-python -m ruff check src tests examples
-python -m ruff format --check src tests examples
-python -m build
-```
-
-Tests cover time alignment, free fallback, persistent demotion, full-chunk selection, reference replay calibration, shared prediction buffers, malformed actions, and paired evaluation. The wheel contains the Python package and MIT license; the source distribution also includes examples, tests, and protocol files. Website videos and fonts are excluded from both distributions.
-
-**Version 0.2.0:** all **93 tests** pass in fresh installations outside the source checkout with Python 3.10 / NumPy 1.24, Python 3.11 / NumPy 2.4, and Python 3.14 / NumPy 2.5. Both wheel and source-distribution installation, the console command, the module entry point, and the complete closed-loop example were exercised. Test coverage includes packaging, execution, and the algorithmic behaviors listed above.
+| Online monitor | **[`src/unexpired_plan/core.py`](src/unexpired_plan/core.py)** |
+| Calibration and candidate selection | [`calibration.py`](src/unexpired_plan/calibration.py), [`selection.py`](src/unexpired_plan/selection.py) |
+| Policy integration | [`examples/closed_loop.py`](examples/closed_loop.py), [adapter guide](examples/README.md#connect-your-policy) |
+| Baselines and paired evaluation | [`baselines.py`](src/unexpired_plan/baselines.py), [`evaluation.py`](src/unexpired_plan/evaluation.py) |
+| Equations and experiment settings | [Paper-to-code mapping](examples/README.md#paper-to-code-mapping), [`paper_protocol.json`](configs/paper_protocol.json) |
 
 ## Experimental results
 
-Results from **Tables II and IV of the paper**. Success-rate changes are relative to the unaccelerated reference, with **95% paired interval half-widths**. The equivalence margin is ±2 percentage points.
+Results from **Tables II and IV of the paper**. Success-rate changes are relative to the unaccelerated reference; ± denotes the **95% paired interval half-width**. Equivalence requires the full interval to lie within ±2 percentage points.
 
 | Policy / benchmark | Reference success | Success-rate change | Effective compute speedup | Within ±2 pp? |
 | :--- | ---: | ---: | ---: | :--- |
@@ -98,27 +61,11 @@ Results from **Tables II and IV of the paper**. Success-rate changes are relativ
 | 3D Diffusion Policy / MetaWorld | 94.2% | +0.1 ± 1.4 pp | 3.09× | Yes |
 | Diffusion Policy / ManiSkill3 insertion, held out | 71.3% | −0.2 ± 1.2 pp | 1.96× | Yes |
 
-The original four families use 1,500 paired episodes each. The held-out insertion evaluation uses 6,000 paired episodes after freezing the design. At 1.96× effective compute speedup, speed-matched step reduction changes success by −3.9 pp; the monitored arm changes it by −0.2 ± 1.2 pp. Keeping the reference schedule but removing monitoring yields −6.7 pp at 2.09×.
+The original four families use 1,500 paired episodes each; held-out insertion uses 6,000 after freezing the design. On insertion, speed-matched step reduction gives −3.9 pp at 1.96×; the same reference schedule without monitoring gives −6.7 pp at 2.09×. The reference schedule alone is already within the margin on three of the original four families.
 
-On three of the original four families, the reference schedule alone is already within the margin. PushT remains undecided. All reported closed-loop evaluations are in simulation. **Compute speedup is not task-duration speedup, peak latency, energy savings, or a safety guarantee.**
-
-Results data: [`configs/reported_results.json`](configs/reported_results.json). Experimental protocol and benchmark integration settings: [`configs/paper_protocol.json`](configs/paper_protocol.json).
-
-## Repository map
-
-```text
-src/unexpired_plan/    Python library and installed CLI — the main project code
-examples/             One complete closed-loop example and one integration guide
-tests/                Behavioral, numerical, and command-line regression tests
-configs/              Experimental protocol and paper results tables
-docs/                 GitHub Pages website and media
-```
-
-The website is a static site with no build step or third-party runtime. GitHub Pages serves `main /docs`. For a local preview, serve `docs/` with any static HTTP server. Website and algorithm changes share this repository's version history.
+All evaluations are in simulation. Speedups measure effective inference compute, including scheduled reference calls. [Machine-readable results](configs/reported_results.json).
 
 ## Citation
-
-The archival paper link will be added when it is available. In the meantime, the project can be referenced as:
 
 ```bibtex
 @misc{zhao2026unexpiredplan,
@@ -131,6 +78,6 @@ The archival paper link will be added when it is available. In the meantime, the
 
 ## License and acknowledgments
 
-Original code is available under the [MIT License](LICENSE). Research figures, fonts, third-party footage, and models retain their respective rights and licenses. See [third-party notices](THIRD_PARTY_NOTICES.md) and the [full media acknowledgments](https://yizhaojasper.com/unexpired-plan/credits.html).
+Code: [MIT License](LICENSE). Figures, fonts, and third-party media retain their respective rights. See [third-party notices](THIRD_PARTY_NOTICES.md) and [media acknowledgments](https://yizhaojasper.com/unexpired-plan/credits.html).
 
-<p><a href="https://github.com/YiZhao-Jasper"><img src="https://avatars.githubusercontent.com/u/255689395?s=80" width="36" height="36" alt="YiZhao-Jasper's GitHub avatar" align="left"></a> Repository maintained by <strong><a href="https://github.com/YiZhao-Jasper">YiZhao-Jasper</a></strong>.<br><sub>Research authors: Yi Zhao and Sebastian Scherer · AirLab, Carnegie Mellon University.</sub></p>
+<p><a href="https://github.com/YiZhao-Jasper"><img src="https://avatars.githubusercontent.com/u/255689395?s=80" width="36" height="36" alt="YiZhao-Jasper's GitHub avatar" align="left"></a> Maintained by <strong><a href="https://github.com/YiZhao-Jasper">YiZhao-Jasper</a></strong>.</p>
