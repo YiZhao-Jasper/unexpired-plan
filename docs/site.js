@@ -81,7 +81,7 @@ document.addEventListener('visibilitychange', () => {
   if (document.visibilityState !== 'visible') pausePair();
   else if (inView && !userPaused && !reducedMotion.matches) playPair();
 });
-reducedMotion.addEventListener('change', () => { if (reducedMotion.matches) { pausePair(); stopPlan(); } });
+reducedMotion.addEventListener('change', () => { if (reducedMotion.matches) pausePair(); });
 
 // Show only the two actual paper frames: no generated intermediate rollout.
 $$('[data-phase]').filter(el => el.tagName === 'BUTTON').forEach(button => {
@@ -102,7 +102,29 @@ $$('[data-phase]').filter(el => el.tagName === 'BUTTON').forEach(button => {
 
 // Temporal alignment example: H=8, execution horizon=2, refresh every 4 calls.
 const callStep = $('#call-step');
-let planTimer = null;
+
+// Start the method demonstrations on arrival. Manual choices pause their own
+// loop; hidden tabs suspend timers without losing the visitor's playback choice.
+function automaticSequence({ button, output, delay, advance, label, playText, pauseText }) {
+  let playing = !reducedMotion.matches;
+  let timer = null;
+  function sync() {
+    clearInterval(timer);
+    timer = null;
+    button.innerHTML = `${playing ? pauseText : playText} <span aria-hidden="true">${playing ? 'Ⅱ' : '▶'}</span>`;
+    button.setAttribute('aria-label', `${playing ? 'Pause' : 'Play'} ${label}`);
+    output.setAttribute('aria-live', playing ? 'off' : 'polite');
+    if (playing && document.visibilityState === 'visible') timer = setInterval(advance, delay);
+  }
+  button.addEventListener('click', () => { playing = !playing; sync(); });
+  document.addEventListener('visibilitychange', sync);
+  reducedMotion.addEventListener('change', () => {
+    if (reducedMotion.matches) { playing = false; sync(); }
+  });
+  sync();
+  return { pause() { playing = false; sync(); } };
+}
+
 function drawPlan() {
   const call = Number(callStep.value);
   const base = call === 4 ? 8 : 0;
@@ -140,33 +162,40 @@ function drawPlan() {
       ? 'The old reference has expired. Run the next scheduled reference call, execute actions 8 and 9, and store a new plan.'
       : `Read actions ${start} and ${start + 1} from the saved reference. No new reference forward pass is needed for this check.`;
 }
-function stopPlan() { clearInterval(planTimer); planTimer = null; $('#plan-play').innerHTML = 'Play sequence <span aria-hidden="true">▶</span>'; }
-$('#plan-play').addEventListener('click', () => {
-  if (planTimer) { stopPlan(); return; }
-  callStep.value = 0; drawPlan();
-  $('#plan-play').innerHTML = 'Pause sequence <span aria-hidden="true">Ⅱ</span>';
-  planTimer = setInterval(() => {
-    if (Number(callStep.value) === 4) { stopPlan(); return; }
-    callStep.value = Number(callStep.value) + 1; drawPlan();
-  }, 1700);
-});
-callStep.addEventListener('input', () => { stopPlan(); drawPlan(); });
+callStep.value = 0;
 drawPlan();
+const planSequence = automaticSequence({
+  button: $('#plan-play'), output: $('#call-explanation'), delay: 2400,
+  label: 'alignment sequence', playText: 'Play sequence', pauseText: 'Pause sequence',
+  advance() { callStep.value = (Number(callStep.value) + 1) % 5; drawPlan(); }
+});
+callStep.addEventListener('input', () => { planSequence.pause(); drawPlan(); });
 
 const checks = {
   agree: { path: 'M25 114C160 39 289 10 495 72', text: 'Small deviation δ and no near repetition: let the accelerated action through.', title: 'Schematic action curves: reference and accelerated proposal agree' },
   drift: { path: 'M25 117C160 92 289 85 495 123', text: 'Large deviation δ: veto the proposal and execute the aligned stored reference slice.', title: 'Schematic action curves: the accelerated proposal drifts away from the reference' },
   repeat: { path: 'M25 117C160 42 289 13 495 75', text: 'Re-emitting the saved plan can make δ vanish. The near-repetition check λ supplies the veto that deviation alone can miss.', title: 'Schematic action curves: repetition agrees with the old plan but can miss what a fresh reference would say' }
 };
-$$('[data-check]').forEach(button => button.addEventListener('click', () => {
-  const kind = button.dataset.check;
-  $$('[data-check]').forEach(item => { item.classList.toggle('active', item === button); item.setAttribute('aria-pressed', String(item === button)); });
+const checkKinds = Object.keys(checks);
+let currentCheck = 0;
+function drawCheck(kind) {
+  currentCheck = checkKinds.indexOf(kind);
+  $$('[data-check]').forEach(item => { item.classList.toggle('active', item.dataset.check === kind); item.setAttribute('aria-pressed', String(item.dataset.check === kind)); });
   $('#proposal-curve').setAttribute('d', checks[kind].path);
   $('#proposal-curve').setAttribute('stroke-dasharray', kind === 'repeat' ? '10 9' : 'none');
   $('#truth-curve').style.opacity = kind === 'repeat' ? 1 : 0;
   $('#truth-key').hidden = kind !== 'repeat';
   $('#check-explanation').textContent = checks[kind].text;
   $('#check-svg-title').textContent = checks[kind].title;
+}
+const checkSequence = automaticSequence({
+  button: $('#checks-play'), output: $('#check-explanation'), delay: 3600,
+  label: 'monitor cases', playText: 'Play', pauseText: 'Pause',
+  advance() { drawCheck(checkKinds[(currentCheck + 1) % checkKinds.length]); }
+});
+$$('[data-check]').forEach(button => button.addEventListener('click', () => {
+  checkSequence.pause();
+  drawCheck(button.dataset.check);
 }));
 
 const figureDialog = $('#figure-dialog');
@@ -196,7 +225,7 @@ $$('[data-time]').forEach(button => button.addEventListener('click', () => {
   else { film.addEventListener('loadedmetadata', seek, { once: true }); film.load(); }
   film.scrollIntoView({ block: 'center', behavior: reducedMotion.matches ? 'instant' : 'smooth' });
 }));
-film.addEventListener('play', () => { pausePair(); stopPlan(); });
+film.addEventListener('play', () => { pausePair(); planSequence.pause(); checkSequence.pause(); });
 
 $('#copy-citation').addEventListener('click', async () => {
   let copied = false;
