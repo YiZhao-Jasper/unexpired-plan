@@ -28,6 +28,8 @@ The tests cover reference accounting, time alignment, nondivisible horizons, one
 
 **16 additional browser checks passed** for automatic method playback: both demonstrations start without a click, visit every state, and loop. Manual selections pause their own sequence, Play resumes it, and Pause stops it. Controls fit desktop and mobile widths. Reduced-motion preferences suppress automatic playback; automatic text changes do not repeatedly interrupt screen readers.
 
+The playback pacing was subsequently refined to **1.9 seconds per alignment step** and **2.8 seconds per monitor case**. Browser timestamps confirm those intervals, complete loops, and functioning manual pause controls without JavaScript errors.
+
 The README animation is rendered at 1920 × 1008 from the same matched V3 simulation clips, with brief overlays explaining saved actions, aligned checks, and persistent demotion. It remains a synthetic illustration, not a benchmark measurement. Its source clips play at the same speed; the final state is held before the animation repeats.
 
 The public file set is checked separately for private production paths and submission metadata. Media attribution is preserved. These checks validate this implementation and presentation; they do not reproduce the paper's benchmark results or establish hardware safety.

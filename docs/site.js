@@ -165,7 +165,7 @@ function drawPlan() {
 callStep.value = 0;
 drawPlan();
 const planSequence = automaticSequence({
-  button: $('#plan-play'), output: $('#call-explanation'), delay: 2400,
+  button: $('#plan-play'), output: $('#call-explanation'), delay: 1900,
   label: 'alignment sequence', playText: 'Play sequence', pauseText: 'Pause sequence',
   advance() { callStep.value = (Number(callStep.value) + 1) % 5; drawPlan(); }
 });
@@ -189,7 +189,7 @@ function drawCheck(kind) {
   $('#check-svg-title').textContent = checks[kind].title;
 }
 const checkSequence = automaticSequence({
-  button: $('#checks-play'), output: $('#check-explanation'), delay: 3600,
+  button: $('#checks-play'), output: $('#check-explanation'), delay: 2800,
   label: 'monitor cases', playText: 'Play', pauseText: 'Pause',
   advance() { drawCheck(checkKinds[(currentCheck + 1) % checkKinds.length]); }
 });
