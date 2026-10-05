@@ -19,13 +19,26 @@ The following integration function is callable with your predictors and environm
 ```python
 from unexpired_plan import MonitorConfig, UnexpiredPlanMonitor
 
-def run_episode(environment, initial_state, reference, ladder, *,
-                horizon, repetition_threshold, drift_by_age, max_calls=1000):
+
+def run_episode(
+    environment,
+    initial_state,
+    reference,
+    ladder,
+    *,
+    horizon,
+    repetition_threshold,
+    drift_by_age,
+    max_calls=1000,
+):
     # ladder: cost-ordered Candidate instances, starting at the selected rung.
     monitor = UnexpiredPlanMonitor(
-        reference, ladder,
+        reference,
+        ladder,
         MonitorConfig(
-            horizon=horizon, execution_horizon=2, theta=0.15,
+            horizon=horizon,
+            execution_horizon=2,
+            theta=0.15,
             repetition_threshold=repetition_threshold,
             drift_by_age=drift_by_age,
         ),

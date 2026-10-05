@@ -12,6 +12,6 @@ Original software is licensed under `LICENSE`. Media and research assets are sep
 - **A-Lab footage:** Nathan J. Szymanski and coauthors, CC BY 4.0; R1 is supplied at 20×, R3 at 12×.
 - **AirLab logo:** AirLab / Carnegie Mellon University, used to identify the authors' affiliation; not covered by the code license.
 
-Full source links, creator names, license links, and modification descriptions for every film excerpt are available in [`docs/credits.html`](docs/credits.html) and the [published acknowledgments](https://yizhao-jasper.github.io/unexpired-plan/credits.html). Shared hardware footage provides context; it does not show our method deployed on hardware.
+Full source links, creator names, license links, and modification descriptions for every film excerpt are available in [`docs/credits.html`](docs/credits.html) and the [published acknowledgments](https://yizhaojasper.com/unexpired-plan/credits.html). Shared hardware footage provides context; it does not show our method deployed on hardware.
 
 The project-page organization was inspired by [Co-Me](https://co-me-tokens.github.io/). No Co-Me research figures, videos, numerical results, or source code are bundled.

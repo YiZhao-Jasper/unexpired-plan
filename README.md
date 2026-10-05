@@ -14,7 +14,7 @@
 
 <p align="center"><a href="https://yizhaojasper.com/unexpired-plan/#comparison"><img src="https://raw.githubusercontent.com/YiZhao-Jasper/unexpired-plan/main/docs/assets/comparison.gif" alt="Matched simulation: keep a reference plan, check accelerated actions, then reuse the saved slice and retain a more conservative accelerator after a veto. Monitoring off misses the target; Unexpired Plan reaches it." width="100%"></a></p>
 
-<p align="center"><sub>Controlled, synthetic MuJoCo illustration · same disturbance, reference schedule, and playback speed.<br>Illustrates the mechanism; these trials are not benchmark measurements. <a href="https://yizhaojasper.com/unexpired-plan/#comparison">Watch the synchronized 1080p comparison</a> · <a href="https://yizhaojasper.com/unexpired-plan/#illustration-note">Details and credits</a>.</sub></p>
+<p align="center"><sub>Controlled, synthetic MuJoCo illustration · same disturbance, reference schedule, and playback speed.<br>Shows deviation-triggered fallback and persistent demotion; near-repetition detection is disabled in this illustration. These trials are not benchmark measurements. <a href="https://yizhaojasper.com/unexpired-plan/#comparison">Watch the synchronized 1080p comparison</a> · <a href="https://yizhaojasper.com/unexpired-plan/#illustration-note">Details and credits</a>.</sub></p>
 
 ## A plan can outlive the call that made it
 

@@ -8,10 +8,10 @@
   <meta property="og:type" content="website">
   <meta property="og:title" content="The Unexpired Plan">
   <meta property="og:description" content="A Free Monitor for Accelerated Diffusion Policies · Yi Zhao and Sebastian Scherer · AirLab, Carnegie Mellon University">
-  <meta property="og:image" content="https://yizhao-jasper.github.io/unexpired-plan/assets/social.jpg">
-  <meta property="og:url" content="https://yizhao-jasper.github.io/unexpired-plan/">
+  <meta property="og:image" content="https://yizhaojasper.com/unexpired-plan/assets/social.jpg">
+  <meta property="og:url" content="https://yizhaojasper.com/unexpired-plan/">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="canonical" href="https://yizhao-jasper.github.io/unexpired-plan/">
+  <link rel="canonical" href="https://yizhaojasper.com/unexpired-plan/">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/fonts/Inter-Regular.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="style.css?v=3">
@@ -74,9 +74,9 @@
         <div class="method-intro"><span class="step-number">01</span><div><h3>Align the actions in time.</h3><p>The next executed actions must be compared with the <strong>same future indices</strong> of the saved plan.</p></div><span class="lab-label">INTERACTIVE SCHEMATIC</span></div>
         <div class="plan-lab">
           <div class="plan-label"><span id="reference-label">Saved reference</span><span>H = 8 · H<sub>exec</sub> = 2 · m = 4</span></div>
-          <div class="plan-row" id="reference-plan" aria-label="Reference action indices"></div>
+          <div class="plan-row" id="reference-plan" role="group" aria-label="Reference action indices"></div>
           <div class="plan-label"><span id="proposal-label">Accelerated call 1</span><span class="blue" id="alignment-note">Compare indices 2–3</span></div>
-          <div class="plan-row proposal-row" id="proposal-plan" aria-label="Accelerated action indices"></div>
+          <div class="plan-row proposal-row" id="proposal-plan" role="group" aria-label="Accelerated action indices"></div>
           <div class="plan-key"><span><i class="key-past"></i>Executed</span><span><i class="key-plan"></i>Unexpired</span><span><i class="key-active"></i>Compared now</span></div>
           <div class="call-control"><button class="text-button" id="plan-play" type="button">Play sequence <span aria-hidden="true">▶</span></button><label for="call-step">Control call</label><input type="range" id="call-step" min="0" max="4" step="1" value="1"><output for="call-step" id="call-output" aria-live="off">1</output></div>
           <p id="call-explanation" class="lab-explanation" aria-live="polite">Read actions 2 and 3 from the saved reference. No new reference forward pass is needed for this check.</p>
@@ -116,9 +116,9 @@
 
   <section class="film-section" id="film" aria-labelledby="film-title"><div class="wrap section">
     <div class="film-heading"><div><p class="eyebrow">04 / THE FILM · 1080p</p><h2 id="film-title">See the full story.</h2></div><p>From the physical motivation<br>to the monitor and its evidence.</p></div>
-    <video id="film-video" controls playsinline preload="none" poster="assets/media/film-poster.webp?v=2" aria-label="The Unexpired Plan, four-minute research film with English male narration"><source src="assets/media/unexpired-plan-film.mp4?v=2" type="video/mp4"><track kind="captions" src="assets/media/unexpired-plan.en.vtt" srclang="en" label="English">Your browser does not support embedded video. <a href="assets/media/unexpired-plan-film.mp4?v=2">Download the film.</a></video>
-    <div class="film-chapters" aria-label="Film chapters"><button type="button" data-time="0"><span>00:00</span> Motivation</button><button type="button" data-time="28"><span>00:28</span> Matched comparison</button><button type="button" data-time="67"><span>01:07</span> The monitor</button><button type="button" data-time="146"><span>02:26</span> Results</button><button type="button" data-time="222"><span>03:42</span> Credits</button></div>
-    <div class="film-notes"><p id="illustration-note"><strong>About the moving comparison.</strong> This controlled MuJoCo illustration uses synthetic action streams and choreographed object attachment, with object contact disabled. The repository monitor drives the monitored arm; release positions follow the simulated end effector. These two trials illustrate the mechanism and are not benchmark success-rate measurements.</p><p><strong>About the real-robot footage.</strong> Shared hardware excerpts provide context and do not show deployment of our method. Original footage, authors, licenses, and source playback speeds are documented in <a href="credits.html">sources and acknowledgments <span aria-hidden="true">↗</span></a>.</p></div>
+    <video id="film-video" controls playsinline preload="none" poster="assets/media/film-poster.webp?v=2" aria-label="The Unexpired Plan, four-minute research film with English male narration"><source src="assets/media/unexpired-plan-film.mp4?v=2" type="video/mp4"><track kind="captions" src="assets/media/unexpired-plan.en.vtt?v=2" srclang="en" label="English">Your browser does not support embedded video. <a href="assets/media/unexpired-plan-film.mp4?v=2">Download the film.</a></video>
+    <div class="film-chapters" role="group" aria-label="Film chapters"><button type="button" data-time="0"><span>00:00</span> Motivation</button><button type="button" data-time="28"><span>00:28</span> Matched comparison</button><button type="button" data-time="67"><span>01:07</span> The monitor</button><button type="button" data-time="146"><span>02:26</span> Results</button><button type="button" data-time="222"><span>03:42</span> Credits</button></div>
+    <div class="film-notes"><p id="illustration-note"><strong>About the moving comparison.</strong> This controlled MuJoCo illustration uses synthetic action streams and choreographed object attachment, with object contact disabled. The repository monitor drives the monitored arm; release positions follow the simulated end effector. This illustration exercises deviation-triggered fallback and persistent demotion; the near-repetition veto is disabled here. These two trials illustrate the mechanism and are not benchmark success-rate measurements.</p><p><strong>About the real-robot footage.</strong> Shared hardware excerpts provide context and do not show deployment of our method. Original footage, authors, licenses, and source playback speeds are documented in <a href="credits.html">sources and acknowledgments <span aria-hidden="true">↗</span></a>.</p></div>
   </div></section>
 
   <section class="closing wrap"><div><p class="eyebrow">THE UNEXPIRED PLAN</p><h2>Read the plan.<br><em>Remember the veto.</em></h2></div><a class="airlab-link" href="https://theairlab.org/"><img src="assets/airlab.png" alt="AirLab, Carnegie Mellon University" width="240" height="72" loading="lazy"></a></section>
@@ -127,7 +127,7 @@
             Accelerated Diffusion Policies},
   author = {Yi Zhao and Sebastian Scherer},
   year   = {2026},
-  url    = {https://yizhao-jasper.github.io/unexpired-plan/}
+  url    = {https://yizhaojasper.com/unexpired-plan/}
 }</pre><p class="small-note">Project citation. The archival paper link will be added when available.</p><p class="sr-only" id="copy-status" role="status"></p></section>
 </main>
 <footer class="site-footer wrap"><p>Yi Zhao &amp; Sebastian Scherer <span>·</span> AirLab, Carnegie Mellon University</p><div><a href="credits.html">Credits</a><a href="https://github.com/YiZhao-Jasper/unexpired-plan">Code &amp; website <span aria-hidden="true">↗</span></a><a href="#">Back to top ↑</a></div></footer>
