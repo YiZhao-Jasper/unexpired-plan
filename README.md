@@ -6,9 +6,7 @@
 
 **[AirLab](https://theairlab.org/) · [The Robotics Institute](https://www.ri.cmu.edu/) · Carnegie Mellon University**
 
-**[Paper (arXiv)](https://arxiv.org/abs/2610.05747)** · [PDF](https://arxiv.org/pdf/2610.05747) · [Project website](https://yizhaojasper.com/unexpired-plan/) · [Quick start](#quick-start) · **[Core code](src/unexpired_plan/core.py)** · [Integration guide](examples/README.md) · [Research film](https://yizhaojasper.com/unexpired-plan/#film)
-
-<img alt="Python 3.10 and newer" src="https://img.shields.io/badge/Python-3.10%2B-05639d?style=flat-square"> <img alt="NumPy core" src="https://img.shields.io/badge/Core-NumPy-05639d?style=flat-square"> <img alt="MIT code license" src="https://img.shields.io/badge/Code-MIT-05639d?style=flat-square">
+[Paper](https://arxiv.org/abs/2610.05747) · [Website](https://yizhaojasper.com/unexpired-plan/) · [Film](https://yizhaojasper.com/unexpired-plan/#film)
 
 </div>
 
