@@ -6,7 +6,7 @@
 
 **[AirLab](https://theairlab.org/) · [The Robotics Institute](https://www.ri.cmu.edu/) · Carnegie Mellon University**
 
-[Project website](https://yizhaojasper.com/unexpired-plan/) · [Quick start](#quick-start) · **[Core code](src/unexpired_plan/core.py)** · [Integration guide](examples/README.md) · [Research film](https://yizhaojasper.com/unexpired-plan/#film)
+**[Paper (arXiv)](https://arxiv.org/abs/2610.05747)** · [PDF](https://arxiv.org/pdf/2610.05747) · [Project website](https://yizhaojasper.com/unexpired-plan/) · [Quick start](#quick-start) · **[Core code](src/unexpired_plan/core.py)** · [Integration guide](examples/README.md) · [Research film](https://yizhaojasper.com/unexpired-plan/#film)
 
 <img alt="Python 3.10 and newer" src="https://img.shields.io/badge/Python-3.10%2B-05639d?style=flat-square"> <img alt="NumPy core" src="https://img.shields.io/badge/Core-NumPy-05639d?style=flat-square"> <img alt="MIT code license" src="https://img.shields.io/badge/Code-MIT-05639d?style=flat-square">
 
@@ -69,10 +69,14 @@ All evaluations are in simulation. Speedups measure effective inference compute,
 
 ```bibtex
 @misc{zhao2026unexpiredplan,
-  title  = {The Unexpired Plan: A Free Monitor for Accelerated Diffusion Policies},
-  author = {Yi Zhao and Sebastian Scherer},
-  year   = {2026},
-  url    = {https://yizhaojasper.com/unexpired-plan/}
+  title         = {The Unexpired Plan: A Free Monitor for Accelerated Diffusion Policies},
+  author        = {Yi Zhao and Sebastian Scherer},
+  year          = {2026},
+  eprint        = {2610.05747},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.RO},
+  doi           = {10.48550/arXiv.2610.05747},
+  url           = {https://arxiv.org/abs/2610.05747}
 }
 ```
 

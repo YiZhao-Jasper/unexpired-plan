@@ -25,6 +25,7 @@ test = ["pytest>=8,<9"]
 dev = ["pytest>=8,<9", "pytest-cov>=5,<8", "ruff>=0.11,<1", "build>=1,<2"]
 
 [project.urls]
+Paper = "https://arxiv.org/abs/2610.05747"
 Homepage = "https://yizhaojasper.com/unexpired-plan/"
 Repository = "https://github.com/YiZhao-Jasper/unexpired-plan"
 Issues = "https://github.com/YiZhao-Jasper/unexpired-plan/issues"

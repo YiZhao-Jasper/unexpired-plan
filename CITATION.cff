@@ -10,7 +10,7 @@ url: "https://yizhaojasper.com/unexpired-plan/"
 version: 0.2.0
 license: MIT
 preferred-citation:
-  type: generic
+  type: article
   title: "The Unexpired Plan: A Free Monitor for Accelerated Diffusion Policies"
   authors:
     - family-names: Zhao
@@ -18,4 +18,6 @@ preferred-citation:
     - family-names: Scherer
       given-names: Sebastian
   year: 2026
-  url: "https://yizhaojasper.com/unexpired-plan/"
+  journal: "arXiv"
+  doi: "10.48550/arXiv.2610.05747"
+  url: "https://arxiv.org/abs/2610.05747"
